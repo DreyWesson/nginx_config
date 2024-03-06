@@ -5,6 +5,7 @@
 #include <sstream>
 #include <algorithm>
 #include <fstream>
+#include <cctype>
 
 //novsiann checks
 
@@ -42,6 +43,16 @@ std::string getValue(const std::map<std::string, std::vector<std::string> > &key
         }
     }
     return ""; // Return empty string if key not found or no values
+}
+
+//skips whitespaces before and after keyword
+void trimWord(int &start, int &end, std::string line)
+{
+    while(isspace(line[start]))
+        start++;
+    end = start;
+    while(isalnum(line[end]))
+        end++;
 }
 
 int main(int argc, char *argv[]) {
@@ -88,6 +99,8 @@ int main(int argc, char *argv[]) {
 
     std::vector<std::string> lines = split(configData, '\n');
     std::map<std::string, std::vector<std::string> > keyValues;
+    int start = 0;
+    int end = 0;
 
     std::string currentSection = "";
     for (std::vector<std::string>::const_iterator it = lines.begin(); it != lines.end(); ++it) {
@@ -101,7 +114,8 @@ int main(int argc, char *argv[]) {
 
         // Check for start of a new section
         if (trimmedLine[trimmedLine.size() - 1] == '{') {
-            currentSection = trimmedLine.substr(0, trimmedLine.size() - 1);
+            trimWord(start,end, trimmedLine);
+            currentSection = trimmedLine.substr(start, end);
         }
         // Check for end of a section
         else if (trimmedLine == "}") {
