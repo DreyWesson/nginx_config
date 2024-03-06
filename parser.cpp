@@ -133,8 +133,7 @@ int main(int argc, char *argv[]) {
     printKeyValue(keyValues);
 
     // Get value by key example
-    std::string value = getValue(keyValues, "worker_processes");
-    std::cout << "Value for 'worker_processes': " << value << std::endl;
+    std::cout << "Value for 'worker_processes': " << getValue(keyValues, "worker_processes") << std::endl;
 
     return 0;
 }
