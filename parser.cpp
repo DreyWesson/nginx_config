@@ -55,6 +55,26 @@ void trimWord(int &start, int &end, std::string line)
         end++;
 }
 
+// Checks closed curly braces or not
+int    checkCurly(std::string line)
+{
+    int i = 0;
+    int openCurly = 0;
+    int closedCurly = 0;
+
+    while(line[i])
+    {
+        if (line[i] == '{')
+            ++openCurly;
+        else if (line[i] == '}')
+            ++closedCurly;
+        ++i;
+    }
+    if (openCurly == closedCurly)
+        return 0;
+    return 1;
+}
+
 int main(int argc, char *argv[]) {
     if (argc < 2) {
         std::cerr << "Usage: " << argv[0] << " <config_file>" << std::endl;
@@ -102,6 +122,11 @@ int main(int argc, char *argv[]) {
     int start = 0;
     int end = 0;
 
+    if(checkCurly(configData) )
+    {
+        std::cerr << "Webserv Error: Quotes are not closed\n";
+        return 0;
+    }
     std::string currentSection = "";
     for (std::vector<std::string>::const_iterator it = lines.begin(); it != lines.end(); ++it) {
         std::string trimmedLine = *it;
@@ -133,8 +158,32 @@ int main(int argc, char *argv[]) {
                 std::string key = tokens[0];
                 std::string value = tokens[1];
                 // Combine all remaining tokens as the value
-                for (size_t i = 2; i < tokens.size(); ++i) {
-                    value += " " + tokens[i];
+                if (trimmedLine[trimmedLine.size() - 1] == '\''){
+                    bool firstLine = true;
+                    while (true)
+                    {
+                        trimmedLine = *it;
+                        tokens = split(trimmedLine, ' ');
+                        std::vector<std::string>::iterator token_it = tokens.begin();
+                        while (token_it != tokens.end())
+                        {
+                            if (firstLine)
+                            {
+                                value += *(++token_it) + " ";
+                                firstLine = false;
+                            }
+                            else
+                                value += *token_it++ + " ";
+                        }
+                        it++;
+                        if (trimmedLine[trimmedLine.size() - 1] == ';' || trimmedLine[trimmedLine.size() - 1] == '}')
+                            break ;
+                    }
+                }
+                else{
+                    for (size_t i = 2; i < tokens.size(); ++i) {
+                        value += " " + tokens[i];
+                    }
                 }
                 if (!currentSection.empty()) {
                     keyValues[currentSection + "." + key].push_back(value);
@@ -145,10 +194,10 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // Print the result
+    // // Print the result
     printKeyValue(keyValues);
 
-    // Get value by key example
+    // // Get value by key example
     std::cout << "Value for 'worker_processes': " << getValue(keyValues, "worker_processes") << std::endl;
 
     return 0;
