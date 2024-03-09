@@ -6,7 +6,7 @@
 /*   By: nikitos <nikitos@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 11:22:34 by nikitos           #+#    #+#             */
-/*   Updated: 2024/03/09 12:07:34 by nikitos          ###   ########.fr       */
+/*   Updated: 2024/03/09 12:37:40 by nikitos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,12 @@ std::string getValue(const std::map<std::string, std::vector<std::string> > &key
 //skips whitespaces before and after keyword
 void trimWord(int &start, int &end, std::string line)
 {
-    while(isspace(line[start]))
-        start++;
-    end = start;
-    while(isalnum(line[end]))
-        end++;
+    end = line.size() - 1;
+    while(isspace(line[end]) || line[end] == '{')
+        end--;
+    // end = start;
+    // while(isalnum(line[end]))
+    //     end++;
 }
 
 // Checks closed curly braces or not
@@ -147,7 +148,8 @@ int main(int argc, char *argv[]) {
         // Check for start of a new section
         if (trimmedLine[trimmedLine.size() - 1] == '{') {
             trimWord(start,end, trimmedLine);
-            currentSection = trimmedLine.substr(start, end);
+            currentSection = trimmedLine.substr(start, end + 1);
+            std::replace(currentSection.begin(), currentSection.end(), ' ', '_');
             base.pushInBase(currentSection);
         }
         // Check for end of a section
