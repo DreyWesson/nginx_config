@@ -1,11 +1,16 @@
-#include <iostream>
-#include <vector>
-#include <map>
-#include <string>
-#include <sstream>
-#include <algorithm>
-#include <fstream>
-#include <cctype>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nikitos <nikitos@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/09 11:22:34 by nikitos           #+#    #+#             */
+/*   Updated: 2024/03/09 12:07:34 by nikitos          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "DataBase.hpp"
 
 //novsiann checks
 
@@ -76,6 +81,7 @@ int    checkCurly(std::string line)
 }
 
 int main(int argc, char *argv[]) {
+
     if (argc < 2) {
         std::cerr << "Usage: " << argv[0] << " <config_file>" << std::endl;
         return 1;
@@ -88,6 +94,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    DataBase base;
     std::string line;
     std::string configData;
     std::string lastLine;
@@ -141,22 +148,18 @@ int main(int argc, char *argv[]) {
         if (trimmedLine[trimmedLine.size() - 1] == '{') {
             trimWord(start,end, trimmedLine);
             currentSection = trimmedLine.substr(start, end);
+            base.pushInBase(currentSection);
         }
         // Check for end of a section
-        else if (trimmedLine == "}") {
-            size_t lastDot = currentSection.find_last_of('.');
-            if (lastDot != std::string::npos) {
-                currentSection = currentSection.substr(0, lastDot);
-            } else {
-                currentSection = "";
-            }
-        }
+        else if (trimmedLine == "}")
+            base.eraseLastSection();
         // Regular key-value pair
         else {
             std::vector<std::string> tokens = split(trimmedLine, ' ');
             if (tokens.size() >= 2) {
                 std::string key = tokens[0];
                 std::string value = tokens[1];
+                std::string fullKey;
                 // Combine all remaining tokens as the value
                 if (trimmedLine[trimmedLine.size() - 1] == '\''){
                     bool firstLine = true;
@@ -185,11 +188,13 @@ int main(int argc, char *argv[]) {
                         value += " " + tokens[i];
                     }
                 }
+                fullKey = base.getFullPathKey();
                 if (!currentSection.empty()) {
-                    keyValues[currentSection + "." + key].push_back(value);
+                    keyValues[fullKey + key].push_back(value);
                 } else {
                     keyValues[key].push_back(value); // For keys not inside a section
                 }
+                // base.printVarPath();
             }
         }
     }
