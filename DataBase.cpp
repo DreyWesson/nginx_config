@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   DataBase.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikitos <nikitos@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oduwoledare <oduwoledare@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 11:19:53 by nikitos           #+#    #+#             */
-/*   Updated: 2024/03/09 12:03:31 by nikitos          ###   ########.fr       */
+/*   Updated: 2024/03/10 09:29:03 by oduwoledare      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "DataBase.hpp"
 
-DataBase::DataBase(){};
+DataBase::DataBase(){}
 
-DataBase::~DataBase(){};
+DataBase::~DataBase(){}
 
 void	DataBase::pushInBase(std::string env_name)
 {
@@ -23,7 +23,7 @@ void	DataBase::pushInBase(std::string env_name)
 
 void	DataBase::eraseLastSection()
 {
-    // if(this->_variablePath.empty())
+    // if(!this->_variablePath.empty())
         this->_variablePath.pop_back();
 }
 
