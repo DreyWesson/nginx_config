@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DataBase.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oduwoledare <oduwoledare@student.42.fr>    +#+  +:+       +#+        */
+/*   By: novsiann <novsiann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 11:16:08 by nikitos           #+#    #+#             */
-/*   Updated: 2024/03/10 09:03:03 by oduwoledare      ###   ########.fr       */
+/*   Updated: 2024/03/10 14:51:38 by novsiann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,10 @@ class DataBase{
 		void		eraseLastSection();
 		void		printVarPath();
 		std::string	getFullPathKey();
+		std::string getKeyWithoutLastSection();
 	private:
 		std::vector<std::string> _variablePath;
 };
+
 
 #endif

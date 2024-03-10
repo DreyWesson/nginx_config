@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DataBase.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oduwoledare <oduwoledare@student.42.fr>    +#+  +:+       +#+        */
+/*   By: novsiann <novsiann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 11:19:53 by nikitos           #+#    #+#             */
-/*   Updated: 2024/03/10 09:29:03 by oduwoledare      ###   ########.fr       */
+/*   Updated: 2024/03/10 14:51:47 by novsiann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,10 @@ void	DataBase::eraseLastSection()
 void	DataBase::printVarPath()
 {
 	std::vector<std::string>::iterator it;
-    for(it = _variablePath.begin(); it != _variablePath.end(); it++)
+    for(it = _variablePath.begin(); it != _variablePath.end(); it++){
+        
         std::cout << *it << " --> ";
+    }
 	std::cout << "\n";
 }
 
@@ -41,6 +43,21 @@ std::string	DataBase::getFullPathKey()
 	std::string finalKey;
 
 	for(it = _variablePath.begin(); it != _variablePath.end(); it++)
+        finalKey += *it + ".";
+	return finalKey;
+}
+
+std::string DataBase::getKeyWithoutLastSection()
+{
+    std::vector<std::string>::iterator it;
+    std::vector<std::string> tmp = this->_variablePath;
+	std::string finalKey;
+
+    if(!tmp.empty())
+    {
+        tmp.pop_back();
+    }
+	for(it = tmp.begin(); it != tmp.end(); it++)
         finalKey += *it + ".";
 	return finalKey;
 }

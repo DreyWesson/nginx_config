@@ -63,6 +63,33 @@ int checkCurly(std::string line) {
     return 1;
 }
 
+int trimSpaces(std::string str)
+{
+    int i = str.size();
+
+    while(isspace(str[i]))
+        i--;
+    return i;
+}
+
+std::string getIndexKey(std::string key,std::map<std::string, std::vector<std::string> > keyValues)
+{
+    typedef std::map<std::string, std::vector<std::string> >::const_iterator MapIterator;
+    std::stringstream finalKey;
+    MapIterator it;
+    int index = 0;
+
+	for(it = keyValues.begin(); it != keyValues.end(); it++)
+    {
+        // std::cout << it->first << std::endl;
+        // std::cout << key << std::endl;
+        if(it->first.substr(0, it->first.size() - 3) == key)
+            ++index;
+    }
+    finalKey << "[" << index << "]";
+    return finalKey.str();
+}
+
 int main(int argc, char *argv[]) {
 
     if (argc < 2) {
@@ -128,6 +155,7 @@ int main(int argc, char *argv[]) {
         if (trimmedLine.empty()) {
             continue;  // Skip empty lines
         }
+        // Create the section key with count if it's not the first occurrence
 
         // Check for start of a new section
         if (trimmedLine[trimmedLine.size() - 1] == '{') {
@@ -138,14 +166,16 @@ int main(int argc, char *argv[]) {
 
             // Update section count
             if (sectionCounts.find(currentSection) == sectionCounts.end()) {
-                sectionCounts[currentSection] = 1;
+                sectionCounts[currentSection] = 0;
             } else {
                 sectionCounts[currentSection]++;
             }
 
             // Create the section key with count if it's not the first occurrence
-            if (sectionCounts[currentSection] > 1) {
-                currentSection = "[" + std::to_string(sectionCounts[currentSection]) + "]";
+            if (sectionCounts[currentSection] >= 0) {
+                std::stringstream ss;
+                ss << "[" << sectionCounts[currentSection] << "]";
+                currentSection += ss.str();
             }
         }
         // Check for end of a section
@@ -158,7 +188,7 @@ int main(int argc, char *argv[]) {
             if (tokens.size() >= 2) {
                 std::string key = tokens[0];
                 std::string value = tokens[1];
-                std::string fullKey;
+                std::string KeyWithoutLastSection;
                 // Combine all remaining tokens as the value
                 if (trimmedLine[trimmedLine.size() - 1] == '\''){
                     bool firstLine = true;
@@ -187,16 +217,14 @@ int main(int argc, char *argv[]) {
                         value += " " + tokens[i];
                     }
                 }
-                fullKey = base.getFullPathKey();
+                KeyWithoutLastSection = base.getKeyWithoutLastSection();
+                std::string indexKey = getIndexKey(key, keyValues);
                 if (!currentSection.empty()) {
-                // size_t pos = fullKey.rfind(".");
-                // if (pos != std::string::npos) {
-                //     fullKey.erase(pos, 1);
-                // }
-                    keyValues[fullKey + currentSection + "." + key].push_back(value);
-                } else {
-                    keyValues[fullKey + key].push_back(value); // For keys not inside a section
-                }
+                        keyValues[KeyWithoutLastSection + currentSection + "." + key + indexKey].push_back(value);
+                 } else {
+                    
+                    keyValues[key + indexKey].push_back(value); // For keys not inside a section
+                 }
                 // base.printVarPath();
             }
         }
