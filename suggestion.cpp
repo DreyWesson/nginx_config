@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
 
             // Create the section key with count if it's not the first occurrence
             if (sectionCounts[currentSection] > 1) {
-                currentSection += "[" + std::to_string(sectionCounts[currentSection]) + "]";
+                currentSection = "[" + std::to_string(sectionCounts[currentSection]) + "]";
             }
         }
         // Check for end of a section
@@ -189,6 +189,10 @@ int main(int argc, char *argv[]) {
                 }
                 fullKey = base.getFullPathKey();
                 if (!currentSection.empty()) {
+                // size_t pos = fullKey.rfind(".");
+                // if (pos != std::string::npos) {
+                //     fullKey.erase(pos, 1);
+                // }
                     keyValues[fullKey + currentSection + "." + key].push_back(value);
                 } else {
                     keyValues[fullKey + key].push_back(value); // For keys not inside a section
