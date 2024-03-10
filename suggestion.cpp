@@ -63,16 +63,7 @@ int checkCurly(std::string line) {
     return 1;
 }
 
-int trimSpaces(std::string str)
-{
-    int i = str.size();
-
-    while(isspace(str[i]))
-        i--;
-    return i;
-}
-
-std::string getIndexKey(std::string key,std::map<std::string, std::vector<std::string> > keyValues)
+std::string getIndexVariableKey(std::string key,std::map<std::string, std::vector<std::string> > keyValues)
 {
     typedef std::map<std::string, std::vector<std::string> >::const_iterator MapIterator;
     std::stringstream finalKey;
@@ -81,14 +72,43 @@ std::string getIndexKey(std::string key,std::map<std::string, std::vector<std::s
 
 	for(it = keyValues.begin(); it != keyValues.end(); it++)
     {
-        // std::cout << it->first << std::endl;
-        // std::cout << key << std::endl;
         if(it->first.substr(0, it->first.size() - 3) == key)
             ++index;
     }
     finalKey << "[" << index << "]";
     return finalKey.str();
 }
+
+// int checkIndexBox(std::string str)
+// {
+//     while()
+// }
+
+// std::string getIndexEnvKey(std::string key,std::map<std::string, std::vector<std::string> > keyValues)
+// {
+//     typedef std::map<std::string, std::vector<std::string> >::const_iterator MapIterator;
+//     std::stringstream finalKey;
+//     MapIterator it;
+//     // size_t start = 0;
+//     int index = 0;
+
+// 	for(it = keyValues.begin(); it != keyValues.end(); it++)
+//     {
+//         size_t lastDot = it->first.find_last_of('.');
+//         size_t start = (lastDot != std::string::npos) ? (lastDot + 1) : 0;
+//         std::string fullPath = it->first.substr(0, start);
+//         fullPath += key;
+//         // std::cout << fullPath << std::endl;
+//         // std::cout << key << std::endl;
+//         // if(checkIndexBox(it->first.substr(start)) == 1)
+//         // {
+//             if(!std::strncmp(fullPath.c_str(), key.c_str(), key.size()))
+//                 ++index;
+//         // }
+//     }
+//     finalKey << "[" << index << "]";
+//     return finalKey.str();
+// }
 
 int main(int argc, char *argv[]) {
 
@@ -218,11 +238,11 @@ int main(int argc, char *argv[]) {
                     }
                 }
                 KeyWithoutLastSection = base.getKeyWithoutLastSection();
-                std::string indexKey = getIndexKey(key, keyValues);
                 if (!currentSection.empty()) {
-                        keyValues[KeyWithoutLastSection + currentSection + "." + key + indexKey].push_back(value);
+                        // std::string indexKey = getIndexEnvKey(key, keyValues);
+                        keyValues[KeyWithoutLastSection + currentSection + "." + key].push_back(value);
                  } else {
-                    
+                    std::string indexKey = getIndexVariableKey(key, keyValues);
                     keyValues[key + indexKey].push_back(value); // For keys not inside a section
                  }
                 // base.printVarPath();

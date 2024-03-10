@@ -6,7 +6,7 @@
 /*   By: novsiann <novsiann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 11:16:08 by nikitos           #+#    #+#             */
-/*   Updated: 2024/03/10 14:51:38 by novsiann         ###   ########.fr       */
+/*   Updated: 2024/03/10 17:03:17 by novsiann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <fstream>
 #include <cctype>
+#include <cstring>
 
 class DataBase{
 	public: 
